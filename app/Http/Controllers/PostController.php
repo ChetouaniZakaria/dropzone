@@ -37,31 +37,34 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $image = new Image;
+        $post = new Post ;
+        $post->title = $request->title;
+        $post->user_id =1;
+        $post -> save();
 
         if($request->hasFile('file')){
             foreach( $request->file('file') as $img)
                 {               
+                    $image = new Image;
                     
                     $file = $img;
                     $name_with_extension = $file->getClientOriginalName();
                     $name = pathinfo($name_with_extension, PATHINFO_FILENAME);
                     $extension = $file->getClientOriginalExtension();
                     $image->path = $file->storeAs('post_images', $name . time() . '.'. $extension);
+
+                    $image->post()->associate($post)->save();
                     // return $file[0]->getClientOriginalName();
-        
                 };
             // $file = $request->file('file');
            
         };
 
-        $post = new Post ;
-        $post->title = $request->title;
-        $post->user_id =1;
-        $post -> save();
+       
+
         // $post = Post::find(2);
-    
-        $post->images()->saveMany([$image]);
+        
+        // $post->images()->saveMany([$image]);
         // dd()
 
     }
